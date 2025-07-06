@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XILFTEN</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 3rem;
+      text-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 30px #0f0;
+    }
+
+    .neon {
+      text-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 30px #0f0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: white;
+      padding: 10px 15px;
+      border: 2px solid #0f0;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    nav a:hover {
+      background-color: #0f0;
+      color: #000;
+    }
+
+    .filters {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #search {
+      margin-bottom: 10px;
+      padding: 10px;
+      width: 300px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .selectors {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    select {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      position: relative;
+      background-color: #111;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #0f0;
+      overflow: hidden;
+    }
+
+    .card img {
+      width: 100%;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .card .content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .card .content h3,
+    .card .content p,
+    .card .content button {
+      margin: 5px 0;
+    }
+
+    footer {
+      margin-top: 20px;
+      text-align: center;
+      padding: 10px 0;
+      background-color: #000;
+      color: white;
+      text-shadow: 0 0 10px #f00, 0 0 20px #f00;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="neon">XILFTEN</h1>
+  <div class="container">
+    <!-- Menú de navegación -->
+    <nav>
+      <a href="#" onclick="showMenu('home')">Home</a>
+      <a href="#" onclick="showMenu('movies')">Películas</a>
+      <a href="#" onclick="showMenu('series')">Series</a>
+    </nav>
+
+    <!-- Filtros -->
+    <div class="filters">
+      <input type="text" id="search" placeholder="Buscar películas o series..." oninput="filterContent()">
+      <div class="selectors">
+        <select id="platform" onchange="filterContent()">
+          <option value="">Todas las plataformas</option>
+          <option value="Netflix">Netflix</option>
+          <option value="Disney">Disney</option>
+          <option value="Prime Video">Prime Video</option>
+          <option value="HBO Max">HBO Max</option>
+        </select>
+        <select id="genre" onchange="filterContent()">
+          <option value="">Todos los géneros</option>
+        </select>
+        <select id="year" onchange="filterContent()">
+          <option value="">Todos los años</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Contenedores de contenido -->
+    <div id="home" class="grid"></div>
+    <div id="movies" class="grid" style="display: none;"></div>
+    <div id="series" class="grid" style="display: none;"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 XILFTEN - Todos los derechos reservados
+  </footer>
+
+  <script>
+    const moviesAndSeries = [
+      { title: "Jessie", type: "Series", platform: "Disney", genre: "Comedia", year: 2011, image: "https://media.themoviedb.org/t/p/w440_and_h660_face/xcUEncUPq4x1gJh28wf39zJTvdl.jpg", link: "go:38974" },
+      { title: "Paradise", type: "series", platform: "Disney", genre: "Drama", year: 2025, image: "https://media.themoviedb.org/t/p/w440_and_h660_face/sJUti0JDtE1IYl7RVJARAGyKHqz.jpg", link: "go:SD3" },
+      { title: "Harlem", type: "series", platform: "Prime Video", genre: "Comedia", year: 2025, image: "https://media.themoviedb.org/t/p/w440_and_h660_face/hQP2zAm5L52vs7fp3JzOI5LZ4uB.jpg", link: "go:SP3" },
+      { title: "The Fall of Diddy", type: "series", platform: "HBO Max", genre: "Documental", year: 2025, image: "https://media.themoviedb.org/t/p/w440_and_h660_face/1igPXOqx7MUOBs9xjPHUHS3Ey7h.jpg", link: "go:SM4" },
+      { title: "Shafted", type: "series", platform: "Netflix", genre: "Comedia", year: 2025, image: "https://media.themoviedb.org/t/p/w440_and_h660_face/fCP1vmCODED6TzCCXEQFr5dYymh.jpg", link: "go:SN3" },
+      { title: "Shared Custody", type: "series", platform: "Disney", genre: "Comedia", year: 2025, image: "https://media.themoviedb.org/t/p/w440_and_h660_face/bfzyaXdeZQvPU0e85WkgoxItQmV.jpg", link: "go:SD2" },
+      { title: "The Liberation", type: "series", platform: "Prime Video", genre: "Drama", year: 2025, image: "https://media.themoviedb.org/t/p/w440_and_h660_face/d6NUDvqHDbCpcNduvb37dwKg5tL.jpg", link: "go:SP2" },
+      { title: "Scars of Beauty", type: "series", platform: "HBO Max", genre: "Drama", year: 2025, image: "https://media.themoviedb.org/t/p/w440_and_h660_face/XoMNsaYs3mVF2JZL9ng1P4kAaZ.jpg", link: "go:SM3" },
+      { title: "The Trauma Code: Heroes on Call", type: "series", platform: "Netflix", genre: "Drama", year: 2025, image: "https://media.themoviedb.org/t/p/w440_and_h660_face/y8h2RwUZM5chv9tuaKVwSPoo3KE.jpg", link: "go:SN2" },
+      { title: "The Best Heart Attack of My Life", type: "series", platform: "Disney", genre: "Drama", year: 2025, image: "https://media.themoviedb.org/t/p/w440_and_h660_face/jQujgWLwsOCmgubjEQfnyMLifwm.jpg", link: "go:SD1" },
+      { title: "Unstoppable", type: "movie", platform: "Prime Video", genre: "Drama", year: 2024, image: "https://media.themoviedb.org/t/p/w440_and_h660_face/tEeDeSVzhBDWitTICB3ERDGFpfx.jpg", link: "go:PP1" },
+      { title: "Harley Quinn", type: "series", platform: "HBO Max", genre: "Animación", year: 2019, image: "https://media.themoviedb.org/t/p/w440_and_h660_face/9Dm1SEh8Wxt8LNNg02exHQ595zg.jpg", link: "go:SM2" },
+      { title: "The Night Agent", type: "series", platform: "Netflix", genre: "Action & Adventure", year: 2023, image: "https://image.tmdb.org/t/p/original/xjsx6rGEgHl2tUqkimo6Bz2KzVo.jpg", link: "go:SN1" },
+      { title: "Nightbitch", type: "movie", platform: "Disney", genre: "Comedia", year: 2024, image: "https://media.themoviedb.org/t/p/w440_and_h660_face/nlJRJ18jvy25B4bOLGd8Ku6tmPO.jpg", link: "go:PD1" },
+      { title: "On call: Long Beach P.D.", type: "series", platform: "Prime Video", genre: "Action & Adventure", year: 2025, image: "https://media.themoviedb.org/t/p/w440_and_h660_face/1JczMq5SCG4T9sLwstQK7QkbimM.jpg", link: "go:SP1" },
+      { title: "An Update on Our Family", type: "series", platform: "HBO Max", genre: "Documental", year: 2025, image: "https://media.themoviedb.org/t/p/w440_and_h660_face/eWnju8bJhB6peZgDdGCLGjCPvrq.jpg", link: "go:SM1" },
+    ];
+
+    const genres = new Set();
+    const years = new Set();
+
+    moviesAndSeries.forEach(item => {
+      addToMenu(item, 'home');
+      addToMenu(item, item.type === 'movie' ? 'movies' : 'series');
+      genres.add(item.genre);
+      years.add(item.year);
+    });
+
+    genres.forEach(genre => {
+      const option = document.createElement('option');
+      option.value = genre;
+      option.textContent = genre;
+      document.getElementById('genre').appendChild(option);
+    });
+
+    years.forEach(year => {
+      const option = document.createElement('option');
+      option.value = year;
+      option.textContent = year;
+      document.getElementById('year').appendChild(option);
+    });
+
+    function addToMenu(item, menu) {
+      const card = document.createElement('div');
+      card.className = "card";
+      
+      const content = `
+        <div class="content">
+          <h3>${item.title}</h3>
+          <p>Género: ${item.genre} | Año: ${item.year} | Plataforma: ${item.platform}</p>
+          <button onclick="window.location.href='${item.link}'">Ver</button>
+        </div>
+      `;
+
+      card.innerHTML = `
+        <img src="${item.image}" alt="${item.title}" onclick="toggleContent(this)">
+        ${content}
+      `;
+
+      document.getElementById(menu).appendChild(card);
+    }
+
+    function toggleContent(img) {
+      const content = img.nextElementSibling;
+      const isVisible = content.style.display === 'flex';
+      
+      // Hide all content before showing the clicked one
+      document.querySelectorAll('.content').forEach(c => c.style.display = 'none');
+      
+      if (!isVisible) {
+        content.style.display = 'flex';
+      }
+    }
+
+    function showMenu(menu) {
+      document.querySelectorAll('.grid').forEach(grid => grid.style.display = 'none');
+      document.getElementById(menu).style.display = 'grid';
+    }
+
+    function filterContent() {
+      const search = document.getElementById('search').value.toLowerCase();
+      const platform = document.getElementById('platform').value;
+      const genre = document.getElementById('genre').value;
+      const year = document.getElementById('year').value;
+
+      document.querySelectorAll('.grid').forEach(grid => grid.innerHTML = '');
+
+      moviesAndSeries
+        .filter(item =>
+          (!search || item.title.toLowerCase().includes(search)) &&
+          (!platform || item.platform === platform) &&
+          (!genre || item.genre === genre) &&
+          (!year || item.year.toString() === year)
+        )
+        .forEach(item => {
+          addToMenu(item, 'home');
+          addToMenu(item, item.type === 'movie' ? 'movies' : 'series');
+        });
+    }
+  </script>
+</body>
+</html>
